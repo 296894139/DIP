@@ -43,7 +43,10 @@ while true
             % the task has been finished
             finished = true;
             break
-        elseif binary_image(current_x + delta(1), current_y + delta(2)) == 1
+        elseif current_x + delta(1) > 0 && current_x + delta(1) <= row && ...
+            current_y + delta(2) > 0 && current_y + delta(2) < col && ...
+            binary_image(current_x + delta(1), current_y + delta(2)) == 1
+        
             current_x = current_x + delta(1);
             current_y = current_y + delta(2);
             break
