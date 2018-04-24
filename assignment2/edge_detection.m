@@ -85,22 +85,42 @@ for i = 2: row-1
     end
 end
 
-% use dual threshold build the final output
-output = zeros(row, col);
-for i = 2: row - 1
-    for j = 2: col - 1
-       if dual_img(i, j) ~= 2
-           output(i, j) = dual_img(i, j);
-       else
-           neighbour = dual_img(i - 1: i + 1, j - 1: j + 1);
-           if any(any(neighbour == 1))
-               output(i, j) = 1;
-           else
-               output(i, j) = 0;
-           end
-       end
+output = padarray(dual_img, [1, 1], 0); % add padding to avoid out of bound
+for i = 2: row + 1
+    for j = 2: col + 1
+        if output(i, j) == 2
+            dfs(i, j);
+        end
     end
 end
+
+    function valid = dfs(x, y)
+        neighbour = output(x - 1:x + 1, y - 1 : y + 1);
+        if any(any(neighbour == 1))
+            output(x, y) = 1;
+            valid = true;
+        elseif ~any(any(neighbour == 2))
+            valid = false;
+            output(x, y) = 0;
+        else
+            valid = false;
+            for a = x - 1: x + 1
+                for b = y - 1: y + 1
+                    if a > 1 && b > 1 && a < row + 2 && b < col + 2
+                        valid = valid && dfs(a, b);
+                    end
+                end
+            end
+            if valid == true
+                output(x, y) = 1;
+            else
+                output(x, y) = 0;
+            end
+        end
+    end
+
+output = output(2:row + 1, 2: col + 1);
+
 
 end
 
